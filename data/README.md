@@ -1,5 +1,7 @@
 # Data
 
+**_Claude Generated Text, might contain wrong information. Will be updated later_**
+
 Raw and processed data are **not tracked by git** (too large, and owned by third parties).
 Download them into `data/raw/` and run the processing scripts to create `data/processed/`.
 

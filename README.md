@@ -1,5 +1,7 @@
 # PyWES_Project
 
+**_Claude Generated Text, might contain wrong information. Will be updated later_**
+
 **Stability-aware wake modelling and wake steering with Python**
 Term paper for *Python for Wind Energy Systems (PyWES)*, Hochschule Flensburg, WiSe 2026/27.
 
