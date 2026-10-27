@@ -1,0 +1,53 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Environments ---
+.venv/
+venv/
+env/
+.conda/
+.python-version
+
+# --- Jupyter ---
+.ipynb_checkpoints/
+
+# --- Secrets / credentials (e.g. Copernicus CDS API key) ---
+.env
+.cdsapirc
+*credentials*
+*secret*
+
+# --- Data (too big / third-party; download with scripts instead) ---
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.nc
+*.grib
+*.grib2
+*.zip
+*.parquet
+*.h5
+*.hdf5
+# data/sample/ and data/README.md stay tracked (small, hand-made files only)
+
+# --- Results (regenerate from code) ---
+results/cache/
+results/figures/draft/
+*.log
+
+# --- Editors / OS ---
+.spyproject/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*

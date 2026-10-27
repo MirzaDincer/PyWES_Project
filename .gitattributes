@@ -1,2 +1,21 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Source and text files: always LF in the repo
+*.py     text eol=lf
+*.ipynb  text eol=lf
+*.md     text eol=lf
+*.yml    text eol=lf
+*.yaml   text eol=lf
+*.txt    text eol=lf
+*.csv    text eol=lf
+
+# Binary files: never touch line endings or show text diffs
+*.png    binary
+*.jpg    binary
+*.pdf    binary
+*.nc     binary
+*.grib   binary
+*.parquet binary
+*.zip    binary
+*.xlsx   binary
