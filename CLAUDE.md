@@ -2,7 +2,7 @@
 
 ## Project Context
 - **Name and purpose:** PyWES_Project — team term paper for *Python for Wind Energy Systems*, Hochschule Flensburg, WiSe 2026/27. Working title: "Stability-aware wake modelling and wake steering with Python". We measure how atmospheric stability and wind shear change wake losses in open SCADA data, compare one global wake-model setting against one setting per stability class, and simulate wake steering per stability class. It is a course project, not a publication: reusing published methods is fine when cited.
-- **Tech stack:** Python ≥ 3.10, NumPy, Pandas, SciPy, xarray/netCDF4, Matplotlib, FLORIS v4 (main wake model and yaw optimization), cdsapi (ERA5 download). IDE: Spyder (connects to `.venv` via `spyder-kernels`). Optional: PyWake, OpenOA, scikit-learn. No database. Full list in `requirements.txt`.
+- **Tech stack:** Python ≥ 3.10, NumPy, Pandas, SciPy, xarray/netCDF4, Matplotlib, FLORIS v4 (main wake model and yaw optimization), cdsapi (ERA5 download). IDE: Spyder. Optional: PyWake, OpenOA, scikit-learn. No database. Full list in `requirements.txt`.
 - **Repository structure:**
   - `src/pywes/` — reusable project code (installed as package `pywes`); paths in `src/pywes/paths.py`
   - `scripts/` — download and processing scripts
@@ -21,7 +21,6 @@ python -m venv .venv
 .venv\Scripts\activate            # macOS/Linux: source .venv/bin/activate
 pip install -r requirements.txt
 pip install -e .                  # makes `import pywes` work everywhere
-pip install "spyder-kernels==<version>"   # only if Spyder asks; use the version it shows
 python scripts/<script_name>.py   # run a pipeline step
 python -c "import floris, pywes; print(floris.__version__)"   # quick environment check
 ```
@@ -29,11 +28,10 @@ python -c "import floris, pywes; print(floris.__version__)"   # quick environmen
 - **Linting/formatting:** no linter is configured. Follow the style of the existing code; do not add tooling without asking.
 
 ## Coding conventions
-- Use paths from `pywes.paths` (`RAW_DIR`, `PROCESSED_DIR`, `FIGURES_DIR`); never hard-code absolute paths like `D:\...`.
+- Use paths from `pywes.paths` (`RAW_DIR`, `PROCESSED_DIR`, `FIGURES_DIR`); never hard-code absolute paths like `D:\...` and don't rely on the current working directory (Spyder may change it).
 - Use FLORIS v4 API (`FlorisModel`, `fmodel.set(...)`, `fmodel.run()`). Check the current docs before using an API you are unsure of: https://natlabrockies.github.io/floris/
 - Put reusable logic in `src/pywes/`; keep analysis scripts thin (load → call functions → plot).
 - Write analysis code as `.py` files split into `# %%` cells for Spyder, not `.ipynb` notebooks.
-- Don't rely on the current working directory (Spyder may change it); always build paths from `pywes.paths`.
 - Write short docstrings with units (m/s, deg, kW). Keep wind directions in meteorological convention (deg, from north).
 - Raw data is read-only: write cleaned output to `data/processed/`.
 - Comments and docs in simple, clear English.
@@ -57,6 +55,9 @@ python -c "import floris, pywes; print(floris.__version__)"   # quick environmen
 - Wakes should be stronger and longer in stable conditions and recover faster in unstable conditions.
 - Wake losses must be ≥ 0 for the downstream turbine in a pair aligned with the wind direction; check sign conventions if not.
 - Wake steering gains are small (typically a few percent) and very sensitive to wind direction error; be suspicious of large gains.
+
+## Planned later
+- The Spyder installation/setup steps (choosing the `.venv` interpreter, installing `spyder-kernels`) were removed from `README.md` for now. When the project is close to its end (final cleanup before submission), remind Mirza to decide whether to add them back.
 
 ## Workflow
 - Work on feature branches; merge to `main` through a pull request reviewed by a teammate.

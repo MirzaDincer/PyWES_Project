@@ -5,7 +5,7 @@
 **Stability-aware wake modelling and wake steering with Python**
 Term paper for *Python for Wind Energy Systems (PyWES)*, Hochschule Flensburg, WiSe 2026/27.
 
-Team: Mirza Dincer, [Name 2], [Name 3], [Name 4]
+Team: Mirza Dincer, Alfin Jose, Alan Anil Abraham
 
 ## About
 
@@ -34,7 +34,6 @@ PyWES_Project/
 │   └── README.md     # data sources, download steps, attribution
 ├── analysis/         # analysis scripts with Spyder cells (# %%)
 ├── scripts/          # download and processing scripts
-├── src/pywes/        # reusable project code
 ├── results/figures/  # final figures for the paper
 ├── docs/             # notes, profile, term paper drafts
 ├── requirements.txt
@@ -51,9 +50,8 @@ python -m venv .venv
 # macOS / Linux:
 source .venv/bin/activate
 
-# install dependencies and this project (editable)
+# install dependencies
 pip install -r requirements.txt
-pip install -e .
 ```
 
 ### Using Spyder
@@ -65,7 +63,8 @@ pip install -e .
 3. Optional: **Projects → New Project → Existing directory** → select this repo folder
    (the `.spyproject/` folder it creates is git-ignored).
 4. Split analysis scripts into cells with `# %%` and run them cell by cell (Ctrl+Enter).
-   Use the paths from `pywes.paths` so scripts work no matter which working directory Spyder uses.
+   Build file paths from the repo root, not from the working directory (Spyder can change it), e.g. in a
+   script inside `analysis/`: `ROOT = Path(__file__).resolve().parents[1]` → `ROOT / "data" / "raw"`.
 
 To download ERA5 data you need a free Copernicus Climate Data Store (CDS) account and an API key.
 Keep the key in your home folder (`.cdsapirc`) — **never commit it**.
