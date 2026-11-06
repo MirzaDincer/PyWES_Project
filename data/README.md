@@ -13,17 +13,27 @@ Download them into `data/raw/` and run the processing scripts to create `data/pr
 
 ## Sources
 
-Final choice of wind farm is still open — keep only the ones we actually use.
+### SCADA data: Hill of Towie wind farm open dataset
 
-### SCADA data (10-minute)
+| Item | Details |
+|---|---|
+| Site | Hill of Towie, Scotland — 21 × Siemens SWT-2.3-VS-82 |
+| Period | January 2016 – April 2026 |
+| Resolution | 10-minute SCADA statistics, timestamps in UTC (end of period) |
+| Released by | RES, on behalf of the owner TRIG |
+| License | CC-BY-4.0 |
+| Link | https://zenodo.org/records/14870023 (always redirects to the latest version) |
+| Size | about 30 GB in total (yearly zip files) — download only the years we need |
 
-| Dataset | Turbines | License | Link |
-|---|---|---|---|
-| Kelmarsh wind farm (Cubico) | 6 | CC-BY-4.0 | [Zenodo – link] |
-| Penmanshiel wind farm (Cubico) | 14 Senvion MM82 | CC-BY-4.0 | https://zenodo.org/records/8253010 |
-| Hill of Towie wind farm | 21 | CC-BY-4.0 | [link] |
+Useful files in the record:
+- Yearly SCADA zips (10-min statistics and alarm logs)
+- Turbine metadata (coordinates, rated power, rotor diameter, hub height) and the data dictionary
+- `ShutdownDuration.zip` — downtime per turbine (for filtering)
+- AeroUp install dates — turbine upgrades that change power performance (filter or mark these periods)
+- Jan–Apr 2026 only: turbine fastlog with Dynamic Yaw controller data (toggled on/off in cycles) and LiDAR data — possible extension, large files
 
-Overview of open SCADA datasets: https://github.com/sltzgs/OpenWindSCADA
+Example download and loading code (Python): https://gh.hhj520.top/resgroup/hill-of-towie-open-source-analysis
+— includes a yaw "northing" correction, which is useful because SCADA yaw/wind direction can be biased.
 
 ### Weather / stability data
 
@@ -33,11 +43,11 @@ Overview of open SCADA datasets: https://github.com/sltzgs/OpenWindSCADA
 
 ## Download steps
 
-1. [Step to download SCADA data → `data/raw/<farm>/`]
+1. Download the turbine metadata and the SCADA years we need from Zenodo → `data/raw/hill_of_towie/`
 2. Create a CDS account, save the API key in `~/.cdsapirc`.
 3. [Run `scripts/<download_era5>.py` → `data/raw/era5/`]
 
 ## Attribution (required)
 
-- **SCADA:** "[Kelmarsh / Penmanshiel] wind farm data, Cubico Sustainable Investments Ltd, licensed under CC-BY-4.0." — add the dataset citation from the Zenodo page.
+- **SCADA:** Hill of Towie wind farm open dataset, released by RES on behalf of TRIG, licensed under CC-BY-4.0. — add the dataset citation and DOI of the version we use from the Zenodo page: [citation + DOI]
 - **ERA5:** "Generated using Copernicus Climate Change Service information [year]." — add the ERA5 dataset citation from the CDS page.

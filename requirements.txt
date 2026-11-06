@@ -12,10 +12,6 @@ floris>=4.0
 # Weather data
 cdsapi
 
-# IDE: Spyder runs separately and connects to this environment through
-# spyder-kernels. Install the version your Spyder asks for, e.g.:
-#   pip install "spyder-kernels==<version shown by Spyder>"
-
 # Optional (uncomment when needed)
 # py_wake          # cross-check of wake models
 # openoa           # SCADA wake-loss analysis

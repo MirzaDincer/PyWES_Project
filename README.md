@@ -34,6 +34,7 @@ PyWES_Project/
 │   └── README.md     # data sources, download steps, attribution
 ├── analysis/         # analysis scripts with Spyder cells (# %%)
 ├── scripts/          # download and processing scripts
+├── src/pywes/        # reusable project code
 ├── results/figures/  # final figures for the paper
 ├── docs/             # notes, profile, term paper drafts
 ├── requirements.txt
@@ -50,21 +51,10 @@ python -m venv .venv
 # macOS / Linux:
 source .venv/bin/activate
 
-# install dependencies
+# install dependencies and this project (editable)
 pip install -r requirements.txt
+pip install -e .
 ```
-
-### Using Spyder
-
-1. In Spyder: **Tools → Preferences → Python interpreter → Use the following interpreter** and choose
-   `.venv\Scripts\python.exe` from this repo. Restart the console.
-2. If Spyder says `spyder-kernels` is missing or has the wrong version, install the version it shows
-   (inside the activated `.venv`): `pip install "spyder-kernels==<version>"`.
-3. Optional: **Projects → New Project → Existing directory** → select this repo folder
-   (the `.spyproject/` folder it creates is git-ignored).
-4. Split analysis scripts into cells with `# %%` and run them cell by cell (Ctrl+Enter).
-   Build file paths from the repo root, not from the working directory (Spyder can change it), e.g. in a
-   script inside `analysis/`: `ROOT = Path(__file__).resolve().parents[1]` → `ROOT / "data" / "raw"`.
 
 To download ERA5 data you need a free Copernicus Climate Data Store (CDS) account and an API key.
 Keep the key in your home folder (`.cdsapirc`) — **never commit it**.
@@ -85,6 +75,7 @@ download steps and the required attribution.
 
 - Work on a branch, open a pull request, and let one teammate review before merging to `main`.
 - Prefer `.py` scripts with `# %%` cells over Jupyter notebooks — they give clean diffs and run directly in Spyder.
+- Use the paths from `pywes.paths` (e.g. `RAW_DIR`, `FIGURES_DIR`) instead of typing folder paths by hand.
 - Save only final figures in `results/figures/`; put drafts in `results/figures/draft/` (ignored).
 
 ## License
