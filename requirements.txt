@@ -5,6 +5,7 @@ scipy
 matplotlib
 xarray
 netCDF4
+pyarrow          # read LiDAR parquet files
 
 # Wake modelling
 floris>=4.0

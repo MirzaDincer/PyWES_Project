@@ -63,3 +63,7 @@ python -c "import floris, pywes; print(floris.__version__)"   # quick environmen
 - Work on feature branches; merge to `main` through a pull request reviewed by a teammate.
 - Don't commit Spyder project settings (`.spyproject/` is git-ignored).
 - Cite sources for methods and data in code comments or `docs/`.
+
+## Roadmap
+- `docs/ROADMAP.md` holds the plan, current status, verified data facts, sanity checks and decisions. Read it at the start of project work.
+- Claude may update `docs/ROADMAP.md` without asking whenever it is useful (step finished, decision made, new fact or risk). Follow the update rules at the top of that file and tell Mirza in one line what changed.
