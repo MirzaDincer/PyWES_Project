@@ -36,7 +36,7 @@ SECTOR_WIDTH = 30.0        # [deg] sector width (Tuna et al. 2026 use 30 deg)
 MIN_WS = 3.0               # [m/s] low-wind filter on ERA5 100 m wind
 MAX_ABS_ZETA10 = 1.0       # [-] remove |10 m / L| > 1 (Tuna et al. 2026)
 MIN_N_CELL = 30            # [-] hide sector/season cells with fewer hours
-RUN_LIDAR_PART = False      # set False if pyarrow is not installed yet
+RUN_LIDAR_PART = True      # set False if pyarrow is not installed yet
 
 ERA5_DIR = RAW_DIR / "era5"
 LIDAR_DIR = RAW_DIR / "lidar_data" / "lidar_data" / "timeseries" / "2428"
@@ -310,7 +310,7 @@ if RUN_LIDAR_PART:
     from pywes import lidar as ld
 
     FIT_HEIGHTS = [28, 38, 48, 58, 68, 78, 88, 99]   # [m] ~ rotor range 18-100 m
-    LIDAR_TIMESTAMP_IS_END = True   # NOT documented for the LiDAR - check! (only 5 min effect)
+    LIDAR_TIMESTAMP_IS_END = False   # NOT documented for the LiDAR - check! (only 5 min effect)
 
     lid_raw = ld.load_zx300_10min(LIDAR_DIR)
     print(f"\nZX300: {lid_raw.index.min()} -> {lid_raw.index.max()}, {len(lid_raw)} records")
