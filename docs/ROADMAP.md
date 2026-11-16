@@ -15,7 +15,7 @@
 > - Update the "Last updated" date and add one line to the change log (§11).
 > - Tell Mirza in one line what was changed.
 >
-> Last updated: 2026-11-13.
+> Last updated: 2026-11-16 (evening).
 
 ---
 
@@ -56,19 +56,59 @@ Course term paper, not a publication: reuse published methods, but cite them.
 | Dynamic Yaw results (RES) | Farm AEP +0.7 % (P50, ±0.4 %); wake steering +1.32 % (±0.54 %) in steerable directions only (~18 % of long-term weight); collective yaw +0.56 % (±0.47 %); site modelled wake loss ~7.6 % (low rotors, high TI → hard site for steering) | RES presentation (web) |
 | Dynamic Yaw tags | **Only in fastlog** (not in 10-min SCADA): `computed_driver_post_processed_toggle_state` (0 = off, 1 = on), `..._core_wake_steering_offset_degrees` (signed, + = counter-clockwise), consensus wind direction (true north), yaw target (**turbine north**) | data dictionary |
 | Campaign northing | Corrections used in the campaign: companion repo `scripts/wfc_analysis_2026/wind_up_config/northing_corrections/HOT_DY_Design_northing.yaml` | data dictionary |
+| Official northing files | Now in `data/sample/` (copied 2026-11-16 from RES companion repo, BSD-3, licence copy included): `optimized_northing_corrections.yaml` (from `northing.py` + `HoT_northing.yaml`, wind-up `optimize_northing_corrections`, ERA5T 100 m reference; data window **2016-01 – 2024-08**) and `HOT_DY_Design_northing.yaml` (entries from **2019-10-14**, incl. **2025** changes → **covers 2024–2026**). Each entry `[turbine, start_utc, correction_deg]` is valid from its start until the next entry for that turbine. **Apply as true = (turbine-north value + correction) mod 360** (RES `inspect_data.py`). Check: T11 −20.9°, T14 −11.6° → removes our +9.7° T11−T14 offset. 2025 changes: T02 2025-02-09 (+14.7°) and 2025-03-18 (+8.3°); T03 2025-08-07 (−177.5°, ~180° flip); T12 2025-08-27 (+140.6°); T07 2025-08-29 (+39.4°) | `data/sample/*northing*.yaml`, RES `inspect_data.py`, 2026-11-16 |
 | AeroUp | Retrofit works on all 21 turbines finished by **2023-05-26** (T13 first, 2021-09) → 2024–2026 data is all post-AeroUp | `Hill_of_Towie_AeroUp_install_dates.csv` |
-| TuneUp | Control upgrade in **2024** on 9 test turbines (~+1.1 % P50, RES). **Turbines and exact dates not in our local docs** — check companion repo `tune_up.py` before using 2024 data | RES PEAK25 poster (web) |
+| TuneUp | **Pitch** TuneUp (not yaw), deployed **2024-03-14** (works 07:00–18:00 UTC; RES uses data from 17:00). Test turbines: **T02, T03, T06, T08, T09, T13, T16, T20, T21** (9). RES analysed it in 3 groups (east: T16/T20/T21 vs refs T17–T19; north: T08/T09/T13 vs T07/T11/T12/T14; south: T02/T03/T06/T08 vs T01/T04/T05/T07/T10). One-time change, ~+1.1 % P50 | RES `HoT_PitchTuneUp2024_*.yaml` (companion repo), PEAK25 poster |
+| Yaw campaigns 2024-01 – 2025-12 | **Corrected 2026-11-16: Dynamic Yaw pre-campaign testing from 2025-10-28 13:00 UTC** (RES excludes ALL turbines to 2025-11-17 13:45). Then test/ref roles changed several times until **2026-02-03**; wrong steering commands on 2025-12-02 (T02, T03, T11); SAT test with **deliberately wrong north offset** on T15 + T18 (2025-11-19/20). RES analysis period starts 2026-01-07 13:00. Before 2025-10-28: no yaw campaign found. Lidars: ZX300 2025-08-21, ZXTM on T07 2025-12-12 | `data/sample/HOT_DY_exclusion_periods.yaml`, RES `HOT_dynamic_yaw.yaml`, lidar reports |
+| Northing files agree | RES v1 file vs Dynamic Yaw file where both are valid (2019-10-15 – 2024-09-01, daily): median difference ≤ 0.8° for all 21 turbines; max 5–6° only on a few days around change dates (T10, T11, T14) | `pywes.northing.compare_tables`, 2026-11-16 |
+| Curtailment periods (RES) | Farm-wide 'lots of curtailment' periods RES excludes in 2024–2025: 2024-01-28 – 02-01, 2024-04-09 – 04-13, 2024-06-28 – 06-29, **2024-08-09 – 09-28**, 2025-05-26 – 05-27, 2025-06-03 – 06-05 | `data/sample/HOT_DY_exclusion_periods.yaml` |
 | `ShutdownDuration` | Covers **only the v1 window (2016 – 2024-08)** → no shutdown file for 2025–2026; use alarm log + status/power filters there | README |
+| `ShutdownDuration.csv` format | Columns `TimeStamp_StartFormat`, `TurbineName` (T01…T21, not StationId), `ShutdownDuration` (s per 10 min, 0–600). Timestamp = **start** of period (SCADA = end → shift 10 min when joining). First row 2016-01-01 00:00, last row 2024-09-01 00:00 → covers our SCADA only for **2024-01 – 2024-08**; 2024-09 – 2026-04 has no shutdown file | file header/tail, checked 2026-11-13 |
+| Downtime proxy | `600 s − wtc_ScReToOp_timeon` (time not ready to operate) equals `ShutdownDuration` in 99.1 % of 734,754 matched rows (Jan–Aug 2024); recall 0.994, precision 0.916 for downtime > 0 → used after 2024-08 | own check, 2026-11-15 |
+| Raw file overlap | Monthly SCADA files hold TimeStamp month-start 00:00 **and** next month-start 00:00 → same keys in two files; last 2025 period (TimeStamp 2026-01-01 00:00) may sit in the 2026-01 file | file heads, 2026-11-15 |
+| Sep 2025 gap | `tblSCTurbine_2025_09` holds only 50,506 of 90,720 expected (period, turbine) records (55.7 %) | test run, 2026-11-15 |
+| Reduced power setpoint on T16/T17 | In the 2024-08 + 2025-09 test months, T16 runs mostly at `wtc_PowerRef_endvalue` 1993 or 2116 kW (only ~23 % at 2300 kW); T16 + T17 cause ~77 % of the `power_setpoint_reduced` removals → with the conservative rule T16 keeps < 20 % of its records. Cause not known; check on the full run | test run, 2026-11-16 |
 | `wtc_ActualWindDirection` | Present in 10-min SCADA from 2022-04 | CHANGELOG 2.1.0 |
+| Nacelle offsets differ between turbines | 2024–2025, no northing: median nacelle_T11 − nacelle_T14 = **+9.7°** (IQR +7.0…+11.6°, 69,028 10-min records); nacelle − ERA5 wd100 (hourly): T11 +19.8°, T14 +10.7° → northing correction needed before any pair analysis with a tight same-direction tolerance | own check (`turbine_comparison.py`), 2026-11-16 |
 | Dataset DOI | Concept DOI 10.5281/zenodo.14870021 (latest); v2.1.0 = 10.5281/zenodo.22662930 | CHANGELOG |
 | Other filters available | `ShutdownDuration.csv` (to 2024-08 only), alarm logs, AeroUp retrofit dates | README |
 
-Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 –
-2025-07 (download script targets up to 2026-04), LiDAR 2428 + 5060, ShutdownDuration.
+### Years before 2024 — are they good for the wake comparison? (checked 2026-11-16)
+
+Sources: RES companion repo configs (AeroUp, TuneUp, northing, exclusions,
+WeDoWind datapack), `Hill_of_Towie_AeroUp_install_dates.csv`, data dictionary.
+Nothing pre-2024 is on disk yet.
+
+| Period | Verdict | Why |
+|---|---|---|
+| 2016-01 – 2019-10-13 | usable with care | Only the v1 northing file covers it, with many large jumps (T01 ~+155° until 2016-06, T12 −143° / −163° in 2016–2020, T16 ~+80–89° 2017-05 – 2023-02, T05 2017–2018). RES used **2016–2019 as training data** in its WeDoWind challenge. Secondary-anemometer correction switched on 2017-08 / 2018-04 (our `ws` = active sensor `wtc_AcWindSp` — check). |
+| **2019-10-14 – 2021-09-22** | **best extra period** | All turbines pre-AeroUp (T13 retrofit starts 2021-09-23), covered by both northing files (they agree), no RES farm-wide exclusion. T19 has a +107° correction until 2019-12-24 (corrected, but check). |
+| 2021-09-23 – 2023-05-26 | avoid for power deficits | AeroUp rollout: T13 2021-09, the other 20 turbines 2022-07-14 – 2023-05-26 (power curves change turbine by turbine); RES farm-wide curtailment **2022-09-03 – 2023-02-12**. Speed deficits are less affected, but mixed states between A and B bias P_B/P_A. |
+| 2023-05-27 – 2024-03-13 | usable | All post-AeroUp, pre-TuneUp; remove RES curtailment days in 2023 (04-09…04-13, 07-01…07-03, 08-18…08-19, 09-24…09-29, 10-10…10-12) and T11's northing change on 2023-12-06. |
+
+Things that change for any pre-2024 use:
+- `wtc_ActualWindDirection` only exists from 2022-04 → our cleaning lists `wd`
+  as a required signal and would drop everything before. The wake comparison
+  only needs `nacelle_pos`, so `wd` must be made optional for those years.
+- `ShutdownDuration` (official downtime) covers all of 2016 – 2024-08 → better
+  than the proxy there.
+- ERA5 must be downloaded for the extra years (CDS request → ask first), and
+  the yearly SCADA zips are ~1.4 GB each.
+- Do not pool periods across AeroUp/TuneUp for **power** deficits; compare per
+  period or use speed deficits.
+
+Bonus found in the RES repo: a public FLORIS v4 model of Hill of Towie
+(`scripts/wedowind_wake_model_2026/floris_inputs/hot_public.yaml` +
+`swt_2_3_82_generic.yaml`, "wake model parameters are the FLORIS v4 defaults")
+— useful starting point for Phase 5 (cite RES, BSD-3).
+
+Data on disk (`data/raw/`, 2026-11-13): SCADA **2024-01 – 2026-04**, ERA5
+**2025-01 – 2026-04** + 2024-01 (rest of 2024 not yet downloaded), LiDAR 2428 + 5060,
+ShutdownDuration.
 
 ---
 
-## 3. Status (2026-11-10)
+## 3. Status (2026-11-16)
 
 **Done**
 - Repo, `src/pywes` package, `pip install -e .`, Spyder `# %%` workflow.
@@ -81,13 +121,46 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
   shear exponent fit, veer, IEC-style disturbed sectors (**formula not yet
   verified against the standard**).
 - `analysis/stability_by_sector.py`: stability per sector/season/day-night,
-  sanity checks, LiDAR part (α, veer, TI per ERA5 class) — LiDAR part currently
-  switched off (`RUN_LIDAR_PART = False`).
-- `data/processed/era5_stability_hourly.csv` (from the ERA5 months on disk).
+  sanity checks, LiDAR part (α, veer, TI per ERA5 class) — LiDAR part now
+  switched on (`RUN_LIDAR_PART = True`).
+- ERA5 download 2025-01 … 2026-04 finished (covers the LiDAR period).
+- `stability_by_sector.py` run on 2026-11-13: `data/processed/era5_stability_hourly.csv`,
+  `stability_counts_by_sector*.csv` and draft figures 00–09 in
+  `results/figures/draft/stability/` (incl. 07 ERA5 vs LiDAR direction, 08 LiDAR
+  by class, 09 α per sector × class). **Results and sanity-check output not yet
+  reviewed.**
+
+- SCADA cleaning 2024–2025 written: `src/pywes/scada_cleaning.py` + `scripts/clean_scada_2024_2025.py` (single-turbine filters, no power-curve outliers, no wake filters; downtime = 0 s; outputs raw-schema CSVs, flags Parquet, CF NetCDF). Tested on 2024-08 (official downtime) and 2025-09 (proxy). **Full 2024–2025 run not done yet.** Before/after plots: `analysis/scada_cleaning_before_after.py` → `results/figures/draft/cleaning/` (tested on the 2 test months).
+- Full 2024–2025 cleaning output found on disk (checked 2026-11-16): `scada_clean_core_2024_2025.nc` covers 2024-01-01 – 2026-01-01; report: 1,500,507 of 2,162,931 records kept (idling −21.8 %, reduced setpoint −5.1 %, downtime −3.5 %). T16 keeps only 27,712 records, T17 46,943 (see §2).
+- Wake-pair script: `src/pywes/pairs.py` + `analysis/turbine_comparison.py` (upstream A vs downstream B, ERA5 direction window, nacelle same-direction check, ERA5 scaled to 59 m with ERA5 shear, speed + power deficit per stability class, sanity checks). Test run on T11 → T14 (238°, 4.9 D) only; **results not reviewed yet**.
+
+- **Northing (2026-11-16):** `src/pywes/northing.py` reads RES's northing YAML
+  files and applies true = (turbine north + correction) mod 360 (valid-from
+  compared with the period START, like wind-up). Tested on real data, T11 → T14
+  2024-01 – 2025-10-27: nacelle T11 − T14 **+9.8° → +0.5°**; nacelle − ERA5 wd100
+  **T11 −1.3°, T14 −1.2°** after correction (before: about +20° / +11°).
+- **Cleaning updated (2026-11-16):** step 16 = exclusion periods, one report
+  line per group: `res_curtailment` (RES file), `tuneup_deployment`
+  (2024-03-14 07:00–18:00, all turbines), `dynamic_yaw` (RES rows + all turbines
+  from 2025-10-28 13:00). Northing applied → `wd_true`, `nacelle_pos_true`;
+  marker column `post_tuneup`; NetCDF attributes `northing`, `exclusion_groups`.
+  Tested on 2025-10 raw data (last kept period starts 2025-10-28 12:50).
+  **Full 2024–2025 re-run still to do on Mirza's PC** (the NetCDF on disk is
+  the old run; the comparison script warns about this).
+- **Comparison updated (2026-11-16):** `analysis/turbine_comparison.py` ends on
+  **27 Oct 2025** (`END = "2025-10-28 00:00"` = end of the last period of
+  27 Oct, comment in the script), applies northing right after loading,
+  warns about old NetCDF, Dynamic Yaw data and TuneUp pairs. Re-run T11 → T14:
+  all sanity checks OK except the class order (unstable 0.185 > neutral 0.079,
+  stable 0.231, power deficit in the core). Mean ws_A differs a lot per class
+  (neutral 11.9 m/s, unstable/stable 7.7–7.8 m/s), so compare the classes in
+  the same wind-speed bins (figure 07) before reading this as physics.
 
 **In progress / next**
-- ERA5 download for 2025-08 … 2026-04 (needed for the LiDAR overlap).
-- Run the LiDAR part of `stability_by_sector.py` once ERA5 covers the LiDAR period.
+- Review the stability figures and the OK / NOT OK sanity-check printout.
+- ERA5 2024: `era5_stability_hourly.csv` covers 2024-01-01 – 2026-04-30 (checked 2026-11-16).
+- Re-run `scripts/clean_scada_2024_2025.py` (new exclusions + northing), then the comparison.
+- Decide whether to add a pre-2024 period (see §2 "Years before 2024").
 
 **Small cleanups**
 - `lidar.py` docstring says pyarrow is not in `requirements.txt` — it is now.
@@ -99,7 +172,8 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
 ## 4. Roadmap
 
 ### Phase 1 — Data (MVP)
-1. **ERA5:** finish download to 2026-04 (ask before starting large requests).
+1. **ERA5:** ~~finish download to 2026-04~~ done 2026-11-13; 2024 still open if
+   2024 SCADA is used (ask before starting large requests).
 2. **SCADA loading and cleaning** → `data/processed/`
    - Apply northing corrections before using direction/yaw.
    - Remove: shutdowns (`ShutdownDuration` — **only to 2024-08**; for 2025–2026
@@ -110,10 +184,12 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
      baseline wake analysis — yaw behaviour differs there. The ON/OFF flag is
      only in the fastlog (`toggle_state`, ~12 GB zip). Without the fastlog:
      exclude Jan–Apr 2026 for the 13 controlled turbines (simplest, safest).
-   - Late 2025: RES says the trial ran "from late 2025" (web page) — **not
-     verified** whether yaw offsets were active before 2026-01-01. Check yaw
-     misalignment on the steering turbines (T02, T03, T11) in Oct–Dec 2025 vs
-     earlier months before using that period as baseline.
+   - **Late 2025 (verified 2026-11-16):** Dynamic Yaw testing started
+     **2025-10-28 13:00 UTC** → baseline = **2024-01-01 – 2025-10-28 13:00** for all
+     turbines (simplest; RES excludes ALL turbines until 2025-11-17 13:45, then
+     turbine-specific periods). Also apply RES's curtailment periods (§2).
+     For 2024: mark the pitch TuneUp step on 2024-03-14 for the 9 test turbines
+     (power curve changes, yaw not).
    - Report each filter with removed samples.
 3. **LiDAR loading and cleaning:** ZX300 (`lidar.py`), ZXTM loader still to
    write (use FD fit residual / fit flags to filter).
@@ -232,7 +308,7 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
   only the steering ones.
 - No `ShutdownDuration` for 2025–2026 → downtime filtering there depends on our
   own alarm/power filters.
-- Possible controller testing in late 2025 (unverified, see Phase 1).
+- Dynamic Yaw testing from 2025-10-28 (verified) must be excluded from the baseline.
 - Only ~16 months of SCADA on disk (dataset goes back to 2016) — download more
   years only if samples are too few (ask first, ~30 GB total).
 - Scope creep.
@@ -242,6 +318,8 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
 - Which turbine pairs (spacing, free-stream upstream turbine)?
 - How many SCADA years do we need for enough samples per class?
 - Wind-speed source for binning: upstream SCADA, ERA5 100 m, or LiDAR?
+- Add a pre-2024 period (best: 2019-10-14 – 2021-09-22)? Needs SCADA zips + ERA5 download
+  and `wd` made optional in the cleaning (ask first).
 - Use the Dynamic Yaw campaign as a real wake-steering check (extra)? Needs the
   ~12 GB fastlog download (ask first).
 - Use the companion package `hot-open` (`pip install hot-open`, BSD-3) for
@@ -295,3 +373,12 @@ Data on disk (`data/raw/`, 2026-11-10): SCADA 2025-01 – 2026-04, ERA5 2025-01 
 - 2026-11-10: Roadmap created (plan, verified data facts, status, sanity checks).
 - 2026-11-10: Claude may now update this file without asking (rules at the top).
 - 2026-11-13: Added Dynamic Yaw design/results/tags, AeroUp end date, TuneUp 2024, ShutdownDuration gap (2025–26), late-2025 check, DOIs; new extra "real wake-steering check"; replaced the "steering only in model" sanity check.
+- 2026-11-16: Added before/after cleaning plots script (status); T16/T17 reduced-setpoint finding (§2).
+- 2026-11-16: Added wake-pair script (status), full 2024–2025 cleaning output (status), T11/T14 nacelle offset finding (§2).
+- 2026-11-15: SCADA cleaning module + script added (status); verified downtime proxy, raw file overlap and Sep 2025 gap (§2).
+- 2026-11-13: Added verified `ShutdownDuration.csv` format (start-of-period timestamps, TurbineName key, ends 2024-08).
+- 2026-11-16: Added `pywes.northing`; cleaning step 16 (RES curtailment, TuneUp works, Dynamic Yaw from 2025-10-28 13:00) + northing columns; comparison END = 27 Oct 2025 + northing; pre-2024 assessment; RES public FLORIS model noted; status updated.
+- 2026-11-16: Copied RES northing + exclusion files to `data/sample/`; corrected late 2025 (Dynamic Yaw testing from 2025-10-28); TuneUp = pitch, 2024-03-14, 9 turbines listed; northing sign convention; RES curtailment periods.
+- 2026-11-16: Added official northing method/files from the companion repo (ERA5 − yaw, `optimized_northing_corrections.yaml`).
+- 2026-11-16: TuneUp = one-time 2024 change (IEA Task 44 minutes); no documented yaw campaign 2024-01 – 2025-12; LiDAR commissioning times; yaw-step check also for 2024.
+- 2026-11-13: Status updated — ERA5 to 2026-04 done, LiDAR part switched on and run (figures 00–09), SCADA 2024 + ERA5 2024-01 now on disk; next steps updated.
